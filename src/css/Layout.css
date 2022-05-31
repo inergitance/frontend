@@ -1,0 +1,60 @@
+ul{
+	display: inline-block;
+	text-align: center;
+	padding: 1rem;
+}
+
+li{
+	display: inline-block;
+	margin: 0 2rem;
+	font-size: 2rem;
+	font-variant: small-caps;
+}
+
+#header{
+	height: auto;
+	background: #FED8B1;
+	position: fixed;
+	width: 100%;
+	text-align: center;
+}
+
+.header-project-logo{
+	float: left;
+	display: inline-block;
+	margin: 1rem;
+	margin-left: 3rem;
+	height: 4rem;
+}
+
+#header li a{
+	text-decoration: none;
+	color: black;
+}
+
+#header li a:hover{
+	color: orange;
+}
+
+.connect-wallet-btn, .show-wallet-btn{
+	display: inline-block;
+	margin: 0 2rem;
+	margin-top: 2rem;
+	float: right;
+	min-width: 15rem;
+	height: 2.5rem;
+	border-radius: 0.8rem;
+	background: rgba(255, 140, 0, 0.5);
+	border: 2px solid transparent;
+	color: red;
+	font-size: 1rem;
+}
+
+.connect-wallet-btn:hover, .show-wallet-btn:hover{
+	border-color: orange;
+}
+
+#main-content{
+	padding-top: 8rem;
+	text-align: center;
+}

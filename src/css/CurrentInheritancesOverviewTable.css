@@ -1,0 +1,10 @@
+.inheritances-overview-table{
+	border-collapse: collapse;
+	border: 1px solid black;
+	margin: 0 auto;
+}
+
+.inheritances-overview-table th, .inheritances-overview-table td{
+	border: 1px solid black;
+	padding: 0.5rem 1rem;
+}

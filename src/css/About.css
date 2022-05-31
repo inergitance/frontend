@@ -1,0 +1,12 @@
+.about-page-text{
+	width: 50%;
+	min-width: 50rem;
+	text-align: justify;
+	margin: 2rem auto;
+}
+
+.about-page-text h1{
+	font-size: 2.5rem;
+	font-variant: small-caps;
+	text-align: center;
+}

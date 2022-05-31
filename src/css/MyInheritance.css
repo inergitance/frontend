@@ -1,0 +1,12 @@
+.create-inheritance-button{
+	width: 35rem;
+	height: 3rem;
+	border-radius: 0.5rem;
+	border: 1px solid black;
+	margin: 2rem;
+	font-size: 1rem;
+}
+
+.create-inheritance-button:hover{
+	border: 1px solid orange;
+}
