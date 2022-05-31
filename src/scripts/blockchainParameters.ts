@@ -40,3 +40,6 @@ export const EXPLORER_TRANSACTION_INFO_SUFIX: string = "";
 
 export const NODE_COMPILE_P2S_ENDPOINT_PREFIX: string = "/script/p2sAddress";
 export const NODE_COMPILE_P2S_ENDPOINT_SUFIX: string = "";
+
+export const NODE_ADDRESS_TO_TREE_PREFIX: string = "/script/addressToTree/";
+export const NODE_ADDRESS_TO_TREE_SUFIX: string = "";

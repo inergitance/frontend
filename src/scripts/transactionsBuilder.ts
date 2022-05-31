@@ -9,7 +9,8 @@ import { IUTXOToken, get_box_to_spend } from "./walletConnector";
 import {
 	generate_phase1_p2s_address,
 	generate_owners_indication_p2s_address,
-	generate_heir_indication_p2s_address
+	generate_heir_indication_p2s_address,
+	generate_phase2_p2s_address
 } from "../smartcontracts/smartcontractsGenerator";
 
 let ergolib = import("ergo-lib-wasm-browser");
@@ -389,7 +390,8 @@ export async function submit_tx(signed_tx: ISignedTx): Promise<string | null> {
 }
 
 export async function test_it() {
-
+	const adr = await generate_phase1_p2s_address();
+	console.log(adr);
 }
 
 export { };

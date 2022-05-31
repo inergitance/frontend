@@ -6,6 +6,9 @@ import { phase3_ergoscript } from "./phase3";
 import { ownerIndication_ergoscript } from "./ownerIndication";
 import { heirIndication_ergoscript } from "./heirIndication";
 
+import { get_request } from "../scripts/restApi";
+import { NODE_URL, NODE_ADDRESS_TO_TREE_PREFIX } from "../scripts/blockchainParameters";
+
 export async function generate_phase1_p2s_address(): Promise<string> {
 	return compile_ergoscript_to_p2s(phase1_ergoscript);
 }
