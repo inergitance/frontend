@@ -1,7 +1,7 @@
 import { get_request } from "./restApi";
 import {
 	EXPLORER_URL, EXPLORER_BLOKCHAIN_HEIGHT_PREFIX, MIN_NANO_ERGS_IN_BOX, TRANSACTION_PHASE1_BLOCKCHAIN_FEE,
-	USE_MAINNET, TRANSACTION_OWNER_WITHDRAWAL_BLOCKCHAIN_FEE
+	USE_MAINNET, TRANSACTION_OWNER_WITHDRAWAL_BLOCKCHAIN_FEE, ADDRESS_NETWORK_TYPE_CURRENT
 } from "./blockchainParameters";
 import { INERGITANCE_SERVICE_FEE_ADDRESS, INERGITANCE_SERVICE_FEE_AMOUNT } from "../scripts/inERGitanceSettings";
 import { IUTXOToken, get_box_to_spend } from "./walletConnector";
@@ -10,7 +10,8 @@ import {
 	generate_phase1_p2s_address,
 	generate_owners_indication_p2s_address,
 	generate_heir_indication_p2s_address,
-	generate_phase2_p2s_address
+	generate_phase2_p2s_address,
+	generate_phase1_p2s_propBytes_hash_hex
 } from "../smartcontracts/smartcontractsGenerator";
 
 let ergolib = import("ergo-lib-wasm-browser");
@@ -183,7 +184,7 @@ async function get_box_selection(utxos: any[], nanoErgs: number, tokens: IUTXOTo
 }
 
 async function get_output_box_candidates_phase1(
-	owner: string, heir: string, weeks: number, nanoErgs: number, tokens: IUTXOToken[],
+	owner: string, heir: string, hpHash: string, lockTime: number, nanoErgs: number, tokens: IUTXOToken[],
 	nftId: string, height: number
 ) {
 
@@ -235,6 +236,41 @@ async function get_output_box_candidates_phase1(
 		wasm.TokenAmount.from_i64(wasm.I64.from_str("1"))
 	);
 
+	//first_output - R4[SigmaProp]
+	const ownerSigmaProp = wasm.Constant.from_byte_array(
+		wasm.Address.from_base58(owner).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT)
+	);
+
+	//first_output - R5[SigmaProp]
+	const heirSigmaProp = wasm.Constant.from_byte_array(
+		wasm.Address.from_base58(heir).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT)
+	);
+
+	//first_output - R6[Coll[Byte]]
+	const holidayProtectorHashValue = wasm.Constant.from_byte_array(
+		Uint8Array.from(Buffer.from(hpHash, "hex"))
+	);
+
+	//first_output - R7[Int]
+	const lockTimeValue = wasm.Constant.from_i32(lockTime);
+
+	//first_output - R8[Coll[Byte]]
+	const nftIdValue = wasm.Constant.from_byte_array(
+		Uint8Array.from(Buffer.from(nftId, "hex"))
+	);	
+
+	//first_output - R9[Coll[Byte]]
+	const phase1PropBytes = wasm.Constant.from_byte_array(
+		Uint8Array.from(Buffer.from((await generate_phase1_p2s_propBytes_hash_hex()), "hex"))
+	);
+
+	first_output_builder.set_register_value(4, ownerSigmaProp);
+	first_output_builder.set_register_value(5, heirSigmaProp);
+	first_output_builder.set_register_value(6, holidayProtectorHashValue);
+	first_output_builder.set_register_value(7, lockTimeValue);
+	first_output_builder.set_register_value(8, nftIdValue);
+	first_output_builder.set_register_value(9, phase1PropBytes);
+
 	output_box_candidates.add(first_output_builder.build());
 	output_box_candidates.add(second_output_builder.build());
 	output_box_candidates.add(third_output_builder.build());
@@ -264,11 +300,11 @@ async function get_output_box_candidates_owner_withdrawal(
 	);
 
 	tokens.forEach((token: IUTXOToken) => {
-		if(token.tokenId !== nftId)
-		first_output_builder.add_token(
-			wasm.TokenId.from_str(token.tokenId),
-			wasm.TokenAmount.from_i64(wasm.I64.from_str(token.amount))
-		);
+		if (token.tokenId !== nftId)
+			first_output_builder.add_token(
+				wasm.TokenId.from_str(token.tokenId),
+				wasm.TokenAmount.from_i64(wasm.I64.from_str(token.amount))
+			);
 	});
 
 	output_box_candidates.add(first_output_builder.build());
@@ -277,7 +313,7 @@ async function get_output_box_candidates_owner_withdrawal(
 }
 
 export async function create_transaction_phase1(
-	owner: string, heir: string, weeks: number, nanoErgs: number, tokens: IUTXOToken[]
+	owner: string, heir: string, hpHash:string, lockTime: number, nanoErgs: number, tokens: IUTXOToken[]
 ): Promise<ITxConverted> {
 
 	let wasm = (await ergolib);
@@ -294,7 +330,7 @@ export async function create_transaction_phase1(
 	const first_input_box_id = input_box_selection.boxes().get(0).box_id().to_str();
 
 	const output_box_candidates = await get_output_box_candidates_phase1(
-		owner, heir, weeks, nanoErgs, tokens, first_input_box_id, height
+		owner, heir, hpHash, lockTime, nanoErgs, tokens, first_input_box_id, height
 	);
 
 	const miner_fee_value = wasm.BoxValue.from_i64(wasm.I64.from_str((TRANSACTION_PHASE1_BLOCKCHAIN_FEE).toString()));

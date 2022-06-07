@@ -78,6 +78,9 @@ export const TX_SENT_DEFAULT_STATE: ITxSent = {
 
 const BLAKE2B_256_ZEROS: string = "0000000000000000000000000000000000000000000000000000000000000000";
 
+//todo rename weeks to lockTime to better describe the real usecase
+//todo rename holiday_protector address to something which will describe better the usecase eg. hash
+
 async function validate_form(
 	settings: ICreateInheritanceProperties,
 	fees: IFees,
@@ -282,6 +285,7 @@ function CreateInheritanceForm() {
 				create_transaction_phase1(
 					addresses.owner,
 					addresses.heir,
+					addresses.holiday_protector,
 					weeks,
 					assetsSelected.ergs,
 					tkns

@@ -9,6 +9,11 @@ export const MAX_UNIQUE_TOKENS_IN_BOX: number = 4;
 export const TRANSACTION_PHASE1_BLOCKCHAIN_FEE: number = 10000000;
 export const TRANSACTION_OWNER_WITHDRAWAL_BLOCKCHAIN_FEE: number = 2000000;
 
+export const ADDRESS_NETWORK_TYPE_MAINNET: number = 0x00;
+export const ADDRESS_NETWORK_TYPE_TESTNET: number = 0x10;
+export const ADDRESS_NETWORK_TYPE_CURRENT: number =
+	USE_MAINNET ? ADDRESS_NETWORK_TYPE_MAINNET : ADDRESS_NETWORK_TYPE_TESTNET;
+
 export const MAINNET_EXPLORER_URL: string = "https://api.ergoplatform.com";
 export const TESTNET_EXPLORER_URL: string = "https://api-testnet.ergoplatform.com";
 export const EXPLORER_URL = USE_MAINNET ? MAINNET_EXPLORER_URL : TESTNET_EXPLORER_URL;
