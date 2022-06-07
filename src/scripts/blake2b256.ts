@@ -20,5 +20,3 @@ export function blake2b256_hexdigest(data: Uint8Array): string{
 export function blake2b256_base64digest(data: Uint8Array): string{
 	return Buffer.from(blake2b256(data)).toString("base64");
 }
-
-export {};
