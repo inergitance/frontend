@@ -1,7 +1,8 @@
 import React from "react";
 
 import {
-	generate_owners_indication_p2s_address, generate_heir_indication_p2s_address
+	generate_owners_indication_p2s_address, generate_heir_indication_p2s_address,
+	generate_phase1_p2s_address, generate_phase2_p2s_address, generate_phase3_p2s_address
 } from "../smartcontracts/smartcontractsGenerator";
 
 import { useState } from "react";
@@ -17,6 +18,9 @@ function AboutPage() {
 
 	const [owner, setOwner] = useState<string>("lol");
 	const [heir, setHeir] = useState<string>("lol");
+	const [p1Addr, setP1Addr] = useState<string>("lol");
+	const [p2Addr, setP2Addr] = useState<string>("lol");
+	const [p3Addr, setP3Addr] = useState<string>("lol");
 
 	if (state.wallet.connected) {
 
@@ -26,6 +30,18 @@ function AboutPage() {
 
 		generate_heir_indication_p2s_address(state.wallet.address).then(result => {
 			setHeir(result);
+		});
+
+		generate_phase1_p2s_address().then(result => {
+			setP1Addr(result);
+		});
+
+		generate_phase2_p2s_address().then(result => {
+			setP2Addr(result);
+		});
+
+		generate_phase3_p2s_address().then(result => {
+			setP3Addr(result);
 		});
 
 	}
@@ -49,8 +65,16 @@ function AboutPage() {
 					More often than not there are no options for deceased to freely express what they wish to happen with their belongings after their death. There can be, for example, restrictions to pass their belongings only to family members, etc., and even if they don't like it, they simply cannot refuse doing so. Therefore, the purpose of this project is to help those affected people to fully regain their financial freedom.
 				</p>
 			</div>
+			<p>OwnerIndication</p>
 			<p>{owner}</p>
+			<p>HeirIndication</p>
 			<p>{heir}</p>
+			<p>P1Addr</p>
+			<p>{p1Addr}</p>
+			<p>P2Addr</p>
+			<p>{p2Addr}</p>
+			<p>P3Addr</p>
+			<p>{p3Addr}</p>
 			<button onClick={buttonClickHandler}>Sign TX</button>
 		</div>
 	);
