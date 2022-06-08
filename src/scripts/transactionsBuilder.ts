@@ -241,7 +241,6 @@ async function get_output_box_candidates_phase1(
 		wasm.Address.from_base58(owner).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT).subarray(1, 34)
 	);
 
-
 	//first_output - R5[SigmaProp]
 	const heirSigmaProp = wasm.Constant.from_ecpoint_bytes(//_group_element(
 		wasm.Address.from_base58(heir).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT).subarray(1, 34)
@@ -309,13 +308,19 @@ async function get_output_box_candidates_owner_withdrawal(
 	});
 
 	const dummyValue = wasm.Constant.from_byte_array(
-		Uint8Array.from(Buffer.from("1234", "hex"))
-	);	
+		Uint8Array.from(Buffer.from("225bf0eae4ae254b52da3dc4d2551575739a8b4ce9aceb059771426bbb292c98", "hex"))
+	);
 
-	first_output_builder.set_register_value(4, dummyValue);
-	first_output_builder.set_register_value(5, dummyValue);
+	const ownerSigmaProp = wasm.Constant.from_ecpoint_bytes(
+		wasm.Address.from_base58(owner).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT).subarray(1, 34)
+	);
+
+	const lockTimeValue = wasm.Constant.from_i32(9);
+
+	first_output_builder.set_register_value(4, ownerSigmaProp);
+	first_output_builder.set_register_value(5, ownerSigmaProp);
 	first_output_builder.set_register_value(6, dummyValue);
-	first_output_builder.set_register_value(7, dummyValue);
+	first_output_builder.set_register_value(7, lockTimeValue);
 	first_output_builder.set_register_value(8, dummyValue);
 	first_output_builder.set_register_value(9, dummyValue);
 
