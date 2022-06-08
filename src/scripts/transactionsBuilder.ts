@@ -237,13 +237,14 @@ async function get_output_box_candidates_phase1(
 	);
 
 	//first_output - R4[SigmaProp]
-	const ownerSigmaProp = wasm.Constant.from_byte_array(
-		wasm.Address.from_base58(owner).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT)
+	const ownerSigmaProp = wasm.Constant.from_ecpoint_bytes(
+		wasm.Address.from_base58(owner).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT).subarray(1, 34)
 	);
 
+
 	//first_output - R5[SigmaProp]
-	const heirSigmaProp = wasm.Constant.from_byte_array(
-		wasm.Address.from_base58(heir).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT)
+	const heirSigmaProp = wasm.Constant.from_ecpoint_bytes(//_group_element(
+		wasm.Address.from_base58(heir).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT).subarray(1, 34)
 	);
 
 	//first_output - R6[Coll[Byte]]
@@ -306,6 +307,17 @@ async function get_output_box_candidates_owner_withdrawal(
 				wasm.TokenAmount.from_i64(wasm.I64.from_str(token.amount))
 			);
 	});
+
+	const dummyValue = wasm.Constant.from_byte_array(
+		Uint8Array.from(Buffer.from("1234", "hex"))
+	);	
+
+	first_output_builder.set_register_value(4, dummyValue);
+	first_output_builder.set_register_value(5, dummyValue);
+	first_output_builder.set_register_value(6, dummyValue);
+	first_output_builder.set_register_value(7, dummyValue);
+	first_output_builder.set_register_value(8, dummyValue);
+	first_output_builder.set_register_value(9, dummyValue);
 
 	output_box_candidates.add(first_output_builder.build());
 
