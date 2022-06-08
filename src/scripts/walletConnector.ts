@@ -96,7 +96,7 @@ export async function get_token_info(id: string): Promise<ITokenInfo> {
     return token_info;
 }
 
-interface IExplorerUTXOToken{
+interface IExplorerUTXOToken {
     tokenId: string,
     index: number,
     amount: number,
@@ -105,7 +105,7 @@ interface IExplorerUTXOToken{
     type: string | null
 }
 
-interface IExplorerUTXO{
+interface IExplorerUTXO {
     boxId: string,
     transactionId: string,
     blockId: string,
@@ -122,26 +122,33 @@ interface IExplorerUTXO{
     mainChain: boolean
 }
 
-export async function get_box_to_spend(id: string): Promise<IUTXO>{
+export async function get_box_to_spend(id: string): Promise<IUTXO> {
 
-    const response:IExplorerUTXO = await get_request(EXPLORER_URL + EXPLORER_BOX_INFO_PREFIX + id);
+    const response: IExplorerUTXO = await get_request(EXPLORER_URL + EXPLORER_BOX_INFO_PREFIX + id);
 
     let utxo: IUTXO = {
         ...response, value: response.value.toString(), assets: [], confirmed: true
     };
 
     response.assets.forEach((token: IExplorerUTXOToken) => {
-        utxo = {...utxo, assets: [...utxo.assets, {
-            tokenId: token.tokenId,
-            // index: token.index,
-            amount: token.amount.toString(),
-            // name: token.name,
-            // decimals: token.decimals,
-            // type: token.type
-        }]}
+        utxo = {
+            ...utxo, assets: [...utxo.assets, {
+                tokenId: token.tokenId,
+                // index: token.index,
+                amount: token.amount.toString(),
+                // name: token.name,
+                // decimals: token.decimals,
+                // type: token.type
+            }]
+        }
     });
 
     return utxo;
+}
+
+export async function get_box_to_spend_original_json(id: string): Promise<string> {
+    const response: IExplorerUTXO = await get_request(EXPLORER_URL + EXPLORER_BOX_INFO_PREFIX + id);
+    return JSON.stringify(response);
 }
 
 export async function get_box_balance(id: string, skip_token: string): Promise<IBalanceWithTokens> {
@@ -153,35 +160,35 @@ export async function get_box_balance(id: string, skip_token: string): Promise<I
         tokens: []
     }
 
-    for(var i=0; i < response.assets.length; ++i){
+    for (var i = 0; i < response.assets.length; ++i) {
         const token = response.assets[i];
-        if(token.tokenId === skip_token) continue;
+        if (token.tokenId === skip_token) continue;
         const token_info = await get_token_info(token.tokenId);
-        box_balance.tokens = [...box_balance.tokens, 
-            {
-                id: token.tokenId,
-                amount: parseInt(token.amount),
-                decimals: token_info.decimals,
-                name: token_info.name,
-                description: token_info.description
-            }
+        box_balance.tokens = [...box_balance.tokens,
+        {
+            id: token.tokenId,
+            amount: parseInt(token.amount),
+            decimals: token_info.decimals,
+            name: token_info.name,
+            description: token_info.description
+        }
         ];
     }
 
     return box_balance;
 }
 
-export async function get_nft_box_balance(nftId: string): Promise<IBalanceWithTokens>{
-    
+export async function get_nft_box_balance(nftId: string): Promise<IBalanceWithTokens> {
+
     const box_balance: IBalanceWithTokens = {
         nanoErgs: 0,
         tokens: []
     }
 
-    if(!(await is_nft(nftId))) return box_balance;
+    if (!(await is_nft(nftId))) return box_balance;
 
     const box_with_nft = await get_box_containing_nft(nftId);
-    if(box_with_nft === null) return box_balance;
+    if (box_with_nft === null) return box_balance;
 
     return get_box_balance(box_with_nft.boxId, nftId);
 }

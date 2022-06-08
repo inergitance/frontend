@@ -1,10 +1,11 @@
 import { get_request } from "./restApi";
 import {
 	EXPLORER_URL, EXPLORER_BLOKCHAIN_HEIGHT_PREFIX, MIN_NANO_ERGS_IN_BOX, TRANSACTION_PHASE1_BLOCKCHAIN_FEE,
-	USE_MAINNET, TRANSACTION_OWNER_WITHDRAWAL_BLOCKCHAIN_FEE, ADDRESS_NETWORK_TYPE_CURRENT
+	USE_MAINNET, TRANSACTION_OWNER_WITHDRAWAL_BLOCKCHAIN_FEE, ADDRESS_NETWORK_TYPE_CURRENT,
+	TRANSACTION_PHASE1_TO_PHASE2_BLOCKCHAIN_FEE
 } from "./blockchainParameters";
 import { INERGITANCE_SERVICE_FEE_ADDRESS, INERGITANCE_SERVICE_FEE_AMOUNT } from "../scripts/inERGitanceSettings";
-import { IUTXOToken, get_box_to_spend } from "./walletConnector";
+import { IUTXOToken, get_box_to_spend, get_box_to_spend_original_json } from "./walletConnector";
 
 import {
 	generate_phase1_p2s_address,
@@ -257,7 +258,7 @@ async function get_output_box_candidates_phase1(
 	//first_output - R8[Coll[Byte]]
 	const nftIdValue = wasm.Constant.from_byte_array(
 		Uint8Array.from(Buffer.from(nftId, "hex"))
-	);	
+	);
 
 	//first_output - R9[Coll[Byte]]
 	const phase1PropBytes = wasm.Constant.from_byte_array(
@@ -329,8 +330,65 @@ async function get_output_box_candidates_owner_withdrawal(
 	return output_box_candidates;
 }
 
+async function get_output_box_candidates_phase1_to_phase2(
+	heir: string, nanoErgs: number, tokens: IUTXOToken[], box_to_spend_json: string,
+	nftId: string, height: number
+) {
+
+	let wasm = (await ergolib);
+
+	const phase2_address = await generate_phase2_p2s_address();
+
+	const inheritance_erg_value = wasm.BoxValue.from_i64(
+		wasm.I64.from_str(
+			(nanoErgs - TRANSACTION_PHASE1_TO_PHASE2_BLOCKCHAIN_FEE).toString()
+		)
+	);
+
+	const output_box_candidates = wasm.ErgoBoxCandidates.empty();
+
+	const first_output_builder = new wasm.ErgoBoxCandidateBuilder(
+		inheritance_erg_value,
+		wasm.Contract.pay_to_address(wasm.Address.from_base58(phase2_address)),
+		height
+	);
+
+	tokens.forEach((token: IUTXOToken) => {
+		first_output_builder.add_token(
+			wasm.TokenId.from_str(token.tokenId),
+			wasm.TokenAmount.from_i64(wasm.I64.from_str(token.amount))
+		);
+	});
+
+	const previous_box = wasm.ErgoBox.from_json(box_to_spend_json);
+
+	const previous_r4 = previous_box.register_value(4);
+	const previous_r5 = previous_box.register_value(5);
+	const previous_r6 = previous_box.register_value(6);
+	const previous_r7 = previous_box.register_value(7);
+	const previous_r8 = previous_box.register_value(8);
+	const previous_r9 = previous_box.register_value(9);
+
+	if (typeof previous_r4 !== "undefined")
+		first_output_builder.set_register_value(4, previous_r4);
+	if (typeof previous_r5 !== "undefined")
+		first_output_builder.set_register_value(5, previous_r5);
+	if (typeof previous_r6 !== "undefined")
+		first_output_builder.set_register_value(6, previous_r6);
+	if (typeof previous_r7 !== "undefined")
+		first_output_builder.set_register_value(7, previous_r7);
+	if (typeof previous_r8 !== "undefined")
+		first_output_builder.set_register_value(8, previous_r8);
+	if (typeof previous_r9 !== "undefined")
+		first_output_builder.set_register_value(9, previous_r9);
+
+	output_box_candidates.add(first_output_builder.build());
+
+	return output_box_candidates;
+}
+
 export async function create_transaction_phase1(
-	owner: string, heir: string, hpHash:string, lockTime: number, nanoErgs: number, tokens: IUTXOToken[]
+	owner: string, heir: string, hpHash: string, lockTime: number, nanoErgs: number, tokens: IUTXOToken[]
 ): Promise<ITxConverted> {
 
 	let wasm = (await ergolib);
@@ -409,6 +467,58 @@ export async function create_transaction_owner_withdrawal(
 		height,
 		miner_fee_value,
 		wasm.Address.from_base58(owner),
+		min_change_value
+	);
+
+	const data_inputs = new wasm.DataInputs();
+	tx_builder.set_data_inputs(data_inputs);
+
+	const tx = tx_builder.build().to_json();
+	const converted = convert_tx_values_number_to_string(JSON.parse(tx));
+
+	converted.inputs = converted.inputs.map((box: any) => {
+		const full_box = utxos.find(utxo => utxo.boxId === box.boxId);
+		if (full_box)
+			return { ...full_box, extension: {} };
+		else return box;
+	});
+
+	return converted;
+}
+
+export async function create_transaction_phase1_to_phase2(
+	heir: string, box_to_spend: INautilusUTXO, nftId: string, nanoErgs: number, tokens: IUTXOToken[]
+): Promise<ITxConverted> {
+
+	let wasm = (await ergolib);
+
+	const height = await get_block_height();
+
+	const utxos = [box_to_spend];
+	const input_box_selection = await get_box_selection(
+		utxos,
+		nanoErgs,
+		tokens
+	);
+
+	const output_box_candidates = await get_output_box_candidates_phase1_to_phase2(
+		heir, nanoErgs, tokens,
+		(await get_box_to_spend_original_json(box_to_spend.boxId)),
+		nftId, height
+	);
+
+	const miner_fee_value = wasm.BoxValue.from_i64(
+		wasm.I64.from_str((TRANSACTION_PHASE1_TO_PHASE2_BLOCKCHAIN_FEE).toString())
+	);
+
+	const min_change_value = wasm.BoxValue.from_i64(wasm.I64.from_str((MIN_NANO_ERGS_IN_BOX).toString()));
+
+	const tx_builder = wasm.TxBuilder.new(
+		input_box_selection,
+		output_box_candidates,
+		height,
+		miner_fee_value,
+		wasm.Address.from_base58(heir),
 		min_change_value
 	);
 

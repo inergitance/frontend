@@ -19,7 +19,7 @@ import { AppContext } from "../redux/AppContext";
 import "../css/CreateInheritanceForm.css";
 
 async function construct_and_sign_withdrawal_transaction(box: INFTBox, address: string): Promise<string | null> {
-	
+
 	const bx: INautilusUTXO = await get_box_to_spend(box.boxId);
 	const tkns: IUTXOToken[] = bx.assets;
 
@@ -35,7 +35,7 @@ async function construct_and_sign_withdrawal_transaction(box: INFTBox, address: 
 	if (!signed_tx) return null;
 
 	const sent_tx = await submit_tx(signed_tx);
-	if(!sent_tx) return null;
+	if (!sent_tx) return null;
 
 	return sent_tx;
 }
@@ -101,11 +101,11 @@ function InheritanceOwnerPage() {
 					get_box_containing_nft(inheritance_id).then(result => {
 						if (result !== null) {
 							construct_and_sign_withdrawal_transaction(result,
-								withdrawalAddressInputElement.current!.value 
-							).then(res => {
-								if(res == null) alert("Transaction sending failed!");
-								else{
-									setTxSent({sent: true, txId: res});
+								withdrawalAddressInputElement.current!.value
+							).then(res => {
+								if (res == null) alert("Transaction sending failed!");
+								else {
+									setTxSent({ sent: true, txId: res });
 								}
 							});
 						}
@@ -126,7 +126,7 @@ function InheritanceOwnerPage() {
 						target="_blank" rel="noopener norefferer">
 						{txSent.txId}
 					</a>
-				 &nbsp;was successfully sent! :-)</h3>
+					&nbsp;was successfully sent! :-)</h3>
 			</div>
 		);
 	}
