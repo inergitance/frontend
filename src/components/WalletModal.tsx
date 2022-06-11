@@ -64,7 +64,9 @@ function WalletModal(props: any) {
 
 	function disconnectButtonHandler() {
 		dispatch({ type: "wallet_reset" });
-		props.setWalletModalOpened(false);
+		ergoConnector.nautilus.disconnect().then((result) => {
+			props.setWalletModalOpened(false);
+		});
 	}
 
 	return (
