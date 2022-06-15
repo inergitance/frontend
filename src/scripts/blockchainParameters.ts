@@ -15,6 +15,10 @@ export const ADDRESS_NETWORK_TYPE_TESTNET: number = 0x10;
 export const ADDRESS_NETWORK_TYPE_CURRENT: number =
 	USE_MAINNET ? ADDRESS_NETWORK_TYPE_MAINNET : ADDRESS_NETWORK_TYPE_TESTNET;
 
+//in case of true do not compile P2S addresses but use the pre-compiled ones
+//(avoid not neccessary request to node)
+export const USE_HARDCODED_P2S_ADDRESSES: boolean = false;
+
 export const MAINNET_EXPLORER_URL: string = "https://api.ergoplatform.com";
 export const TESTNET_EXPLORER_URL: string = "https://api-testnet.ergoplatform.com";
 export const EXPLORER_URL = USE_MAINNET ? MAINNET_EXPLORER_URL : TESTNET_EXPLORER_URL;

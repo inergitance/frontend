@@ -45,3 +45,7 @@ export const phase3_ergoscript: string = `
 
 }
 `;
+
+export const phase3_p2s_hardcoded_mainnet: string = "todo";
+export const phase3_p2s_hardcoded_testnet: string = "26EykmwmEXxLP7Ghhdp5cuNW8M1uburHDmP1KB7DnE5e5haS5pQQLg6c7KEni9xzHALpFmnV3GmuFGnrf39dBvYPzhbPoppfYVqbxht66ijko6yGA5QwwQWr3HJXGhCvwsCKg2jvzmLZWDPpQicYBuGA5sqFEGYKe4meKijd8e5xw8hYpVWJ2QMjmJd29deEEhqRCLGHHvz59VaVh72z2GRYfLtvHefQji69ZAq47poT43m5GxtzRHov2uFxKPe2Yvn4sw2soqfxxvrufjdPmMuYGnLHbLLLS8KEwagbjsdd4vxixvTvQX1q3H4YM566k1D9";
+

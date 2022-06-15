@@ -37,3 +37,6 @@ export const phase1_ergoscript: string = `
 
 }
 `;
+
+export const phase1_p2s_hardcoded_mainnet: string = "todo";
+export const phase1_p2s_hardcoded_testnet: string = "5FsGEsYLFTUyHKDYQxUkPokGFGUbuXDAeaqGSNWsuiMkYadEfiKVZ2Jwop5TKbaTDVjj4npvJCpj3oDULo2aN53H1bn9Kbj1bptiFdWLhsoyaPJ29DNfbJzYpeqxsMcFENrGefcvSbgKyBuxzDwEYRCKBgqoAWru3Yx91FbXwMpYTqSc2P1TQeDdkcVWUnEQjc7aWSQhwLfPdPwyyM7akoHwFD7seg4n7K2tg8tbwdRm8312bahcYt1EcJ9vsS6VwS1raiTq8agR6fCQA8VTniqFtnukq7cPzZGpKUQkiTqWPpgmQTMQh7rTUk8PfMT9fHJcu6XRTu7AL3dcYQoK9dtQkFXqo6TV3evE46MJHzLHAd";
