@@ -46,7 +46,7 @@ interface IAddressCache {
 	heir_indication: IAddressCacheIndicationIndex
 }
 
-var address_cache: IAddressCache = {
+const address_cache: IAddressCache = {
 	p1_p2s_addr: undefined,
 	p2_p2s_addr: undefined,
 	p3_p2s_addr: undefined,

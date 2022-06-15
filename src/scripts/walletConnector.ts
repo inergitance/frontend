@@ -247,6 +247,13 @@ export async function get_box_containing_nft(nft: string): Promise<INFTBox | nul
     const response = await get_request(EXPLORER_URL + EXPLORER_ASSET_SEARCH_PREFIX + nft);
     if (response.items.length === 0) return null;
 
+    //need to be sorted this way, because explorer api returns them in random order
+    response.items.sort((a:any, b:any) => 
+        (a.inclusionHeight < b.inclusionHeight) ? -1 :
+        (a.inclusionHeight > b.inclusionHeight) ? 1 :
+        (a.index < b.index) ? -1 : 1
+    );
+
     //get boxId of latest box which contained this NFT
     const boxId = response.items[response.items.length - 1].boxId;
 
