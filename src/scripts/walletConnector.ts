@@ -247,27 +247,52 @@ export async function get_box_containing_nft(nft: string): Promise<INFTBox | nul
     const response = await get_request(EXPLORER_URL + EXPLORER_ASSET_SEARCH_PREFIX + nft);
     if (response.items.length === 0) return null;
 
+    //because the explorer API has a bug and unfortunately do not return inclusion height (as it had to)
+    //this solution can't be used
+    // -- Comment --
     //need to be sorted this way, because explorer api returns them in random order
-    response.items.sort((a:any, b:any) => 
-        (a.inclusionHeight < b.inclusionHeight) ? -1 :
-        (a.inclusionHeight > b.inclusionHeight) ? 1 :
-        (a.index < b.index) ? -1 : 1
-    );
+    // response.items.sort((a:any, b:any) => 
+    //     (a.inclusionHeight < b.inclusionHeight) ? -1 :
+    //     (a.inclusionHeight > b.inclusionHeight) ? 1 :
+    //     (a.index < b.index) ? -1 : 1
+    // );
 
     //get boxId of latest box which contained this NFT
-    const boxId = response.items[response.items.length - 1].boxId;
+    // const boxId = response.items[response.items.length - 1].boxId;
 
-    const response2 = await get_request(EXPLORER_URL + EXPLORER_BOX_INFO_PREFIX + boxId);
-    if (response2.spentTransactionId != null) return null;
+    // const response2 = await get_request(EXPLORER_URL + EXPLORER_BOX_INFO_PREFIX + boxId);
+    // if (response2.spentTransactionId != null) return null;
+
+    // const nftbox_info: INFTBox = {
+    //     nftId: nft,
+    //     boxId: boxId,
+    //     address: response2.address,
+    //     phase: (await address_to_inheritance_phase(response2.address))
+    // }
+    // -/- Comment -/-
 
     const nftbox_info: INFTBox = {
         nftId: nft,
-        boxId: boxId,
-        address: response2.address,
-        phase: (await address_to_inheritance_phase(response2.address))
+        boxId: "to-be-filled",
+        address: "to-be-filled",
+        phase: 0
     }
 
-    return nftbox_info;
+    //loop through all possible boxes to find correct one or return null
+    //(has to be done this way because of buggy explorer api)
+    for(var i=0; i < response.items.length; ++i){
+        const boxId = response.items[i].boxId;
+        const response2 = await get_request(EXPLORER_URL + EXPLORER_BOX_INFO_PREFIX + boxId);
+        if (response2.spentTransactionId === null) {
+            nftbox_info.boxId = boxId;
+            nftbox_info.address = response2.address;
+            nftbox_info.phase = await address_to_inheritance_phase(response2.address);
+            return nftbox_info;
+            break;
+        }
+    }
+
+    return null;
 }
 
 async function get_role_inheritance_boxes(role_indication_address: string): Promise<INFTBox[]> {
