@@ -280,8 +280,8 @@ async function get_output_box_candidates_phase1(
 	return output_box_candidates;
 }
 
-async function get_output_box_candidates_owner_withdrawal(
-	owner: string, nanoErgs: number, tokens: IUTXOToken[], nftId: string, height: number
+async function get_output_box_candidates_withdrawal(
+	address: string, nanoErgs: number, tokens: IUTXOToken[], nftId: string, height: number
 ) {
 
 	let wasm = (await ergolib);
@@ -296,7 +296,7 @@ async function get_output_box_candidates_owner_withdrawal(
 
 	const first_output_builder = new wasm.ErgoBoxCandidateBuilder(
 		inheritance_erg_value,
-		wasm.Contract.pay_to_address(wasm.Address.from_base58(owner)),
+		wasm.Contract.pay_to_address(wasm.Address.from_base58(address)),
 		height
 	);
 
@@ -313,7 +313,7 @@ async function get_output_box_candidates_owner_withdrawal(
 	);
 
 	const ownerSigmaProp = wasm.Constant.from_ecpoint_bytes(
-		wasm.Address.from_base58(owner).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT).subarray(1, 34)
+		wasm.Address.from_base58(address).to_bytes(ADDRESS_NETWORK_TYPE_CURRENT).subarray(1, 34)
 	);
 
 	const lockTimeValue = wasm.Constant.from_i32(9);
@@ -436,8 +436,8 @@ export async function create_transaction_phase1(
 	return converted;
 }
 
-export async function create_transaction_owner_withdrawal(
-	owner: string, box_to_spend: INautilusUTXO, nftId: string, nanoErgs: number, tokens: IUTXOToken[]
+export async function create_withdrawal_transaction(
+	address: string, box_to_spend: INautilusUTXO, nftId: string, nanoErgs: number, tokens: IUTXOToken[]
 ): Promise<ITxConverted> {
 
 	let wasm = (await ergolib);
@@ -451,8 +451,8 @@ export async function create_transaction_owner_withdrawal(
 		tokens
 	);
 
-	const output_box_candidates = await get_output_box_candidates_owner_withdrawal(
-		owner, nanoErgs, tokens, nftId, height
+	const output_box_candidates = await get_output_box_candidates_withdrawal(
+		address, nanoErgs, tokens, nftId, height
 	);
 
 	const miner_fee_value = wasm.BoxValue.from_i64(
@@ -466,7 +466,7 @@ export async function create_transaction_owner_withdrawal(
 		output_box_candidates,
 		height,
 		miner_fee_value,
-		wasm.Address.from_base58(owner),
+		wasm.Address.from_base58(address),
 		min_change_value
 	);
 

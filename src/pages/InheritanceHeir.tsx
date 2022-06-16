@@ -14,6 +14,8 @@ import { ITxSent, TX_SENT_DEFAULT_STATE } from "../components/CreateInheritanceF
 
 import AssetsSelected from "../components/create_inheritance_form/AssetsSelected";
 
+import WithdrawalForm from "../components/WithdrawalForm";
+
 import { AppContext } from "../redux/AppContext";
 
 import "../css/CreateInheritanceForm.css";
@@ -152,8 +154,11 @@ function InheritanceHeirPage() {
 						</form>
 					</div>
 
-					: <p>TODO</p>
+					: (phaseNumber === 2) ?
 
+						<WithdrawalForm inheritanceId={inheritance_id} setTxSent={setTxSent} />
+
+						: <p>Todo3</p>
 
 			}
 

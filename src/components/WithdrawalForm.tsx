@@ -5,7 +5,7 @@ import {
 } from "../scripts/walletConnector";
 
 import {
-	validate_address, create_transaction_owner_withdrawal, sign_tx, submit_tx, INautilusUTXO
+	validate_address, create_withdrawal_transaction, sign_tx, submit_tx, INautilusUTXO
 } from "../scripts/transactionsBuilder";
 
 import { AppContext } from "../redux/AppContext";
@@ -19,7 +19,7 @@ async function construct_and_sign_withdrawal_transaction(box: INFTBox, address: 
 	const bx: INautilusUTXO = await get_box_to_spend(box.boxId);
 	const tkns: IUTXOToken[] = bx.assets;
 
-	const unsigned_tx = await create_transaction_owner_withdrawal(
+	const unsigned_tx = await create_withdrawal_transaction(
 		address,
 		bx,
 		box.nftId,
@@ -35,6 +35,8 @@ async function construct_and_sign_withdrawal_transaction(box: INFTBox, address: 
 
 	return sent_tx;
 }
+
+//todo fix me - in case of heir withdrawal show remaining time needed to wait before withdrawal
 
 function WithdrawalForm(
 	props: {
