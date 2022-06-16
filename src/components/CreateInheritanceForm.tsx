@@ -359,7 +359,7 @@ function CreateInheritanceForm() {
 					<input type="text" placeholder="Heir's address"
 						onChange={addressesChangedHandler} ref={heirAddressInputElement}
 					/>
-					<input type="text" placeholder="Holiday protector address"
+					<input type="text" placeholder="Holiday protector hash"
 						onChange={addressesChangedHandler} ref={holidayProtectorHashInputElement}
 					/>
 					<button onClick={setZerosHandler} className="create-inheritance-form-button">
