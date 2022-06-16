@@ -19,23 +19,23 @@ import "./css/App.css";
 
 function App() {
 
-    return (
-        <AppProvider>
-            <BrowserRouter>
-                <PageLayout>
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/how-it-works" element={<HowItWorksPage />} />
-                        <Route path="/my-inheritance" element={<MyInheritancePage />} />
-                        <Route path="/create-inheritance" element={<CreateInheritancePage />} />
-                        <Route path="/inheritances/owner" element={<InheritanceOwnerPage />} />
-                        <Route path="/inheritances/heir" element={<InheritanceHeirPage />} />
-                    </Routes>
-                </PageLayout>
-            </BrowserRouter>
-        </AppProvider>
-    );
+	return (
+		<AppProvider>
+			<BrowserRouter>
+				<PageLayout>
+					<Routes>
+						<Route path="/" element={<HomePage />} />
+						<Route path="/about" element={<AboutPage />} />
+						<Route path="/how-it-works" element={<HowItWorksPage />} />
+						<Route path="/my-inheritance" element={<MyInheritancePage />} />
+						<Route path="/create-inheritance" element={<CreateInheritancePage />} />
+						<Route path="/inheritances/owner" element={<InheritanceOwnerPage />} />
+						<Route path="/inheritances/heir" element={<InheritanceHeirPage />} />
+					</Routes>
+				</PageLayout>
+			</BrowserRouter>
+		</AppProvider>
+	);
 
 }
 
