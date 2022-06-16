@@ -371,7 +371,7 @@ function CreateInheritanceForm() {
 					{
 						lockTime ?
 							<p>(approx. {time_to_text(block_difference_to_time(lockTime))})</p>
-						: []
+							: []
 					}
 				</div>
 				<div className="inheritance-form-subsection-div">

@@ -24,7 +24,7 @@ function MyInheritancePage() {
 	//always reload inheritances instead of relaying on the old loaded ones in the redux AppContext state
 	if (!currentInheritances.loaded) {
 		get_users_inheritances(state.wallet.address).then((result: ICurrentInheritances) => {
-			dispatch({type: "inheritances_set", payload: result});
+			dispatch({ type: "inheritances_set", payload: result });
 			setCurrentInheritances(result);
 		});
 	}

@@ -1,6 +1,6 @@
 import React from "react";
 
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { INFTBox } from "../scripts/walletConnector";
 
@@ -35,7 +35,7 @@ function CurrentInheritancesOverviewTable(props: { owner: boolean, value: INFTBo
 						<tr key={box.nftId}>
 							<td>
 								<Link to={
-									"/inheritances/" + 
+									"/inheritances/" +
 									(props.owner ? "owner" : "heir") +
 									"?id=" +
 									box.nftId

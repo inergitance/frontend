@@ -1,12 +1,12 @@
-import React, { Fragment } from 'react';
+import React, { Fragment } from "react";
 
 import { AppContext } from "../redux/AppContext";
 
-import { IUTXO, get_total_balance_including_tokens } from '../scripts/walletConnector';
+import { IUTXO, get_total_balance_including_tokens } from "../scripts/walletConnector";
 
 import AssetsSelected from "./create_inheritance_form/AssetsSelected";
 
-import '../css/WalletModal.css';
+import "../css/WalletModal.css";
 
 const NautilusLogo: string = require("../icons/nautilus-logo-icon.svg").default;
 
@@ -47,7 +47,7 @@ function WalletModal(props: any) {
 
 				context.get_utxos().then((utxos: IUTXO[]) => {
 
-					get_total_balance_including_tokens(utxos).then((res) => {
+					get_total_balance_including_tokens(utxos).then((res) => {
 
 						dispatch({ type: "wallet_set_balance", payload: res });
 						props.setWalletModalOpened(false);

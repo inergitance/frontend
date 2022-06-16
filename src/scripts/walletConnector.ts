@@ -280,7 +280,7 @@ export async function get_box_containing_nft(nft: string): Promise<INFTBox | nul
 
     //loop through all possible boxes to find correct one or return null
     //(has to be done this way because of buggy explorer api)
-    for(var i=0; i < response.items.length; ++i){
+    for (var i = 0; i < response.items.length; ++i) {
         const boxId = response.items[i].boxId;
         const response2 = await get_request(EXPLORER_URL + EXPLORER_BOX_INFO_PREFIX + boxId);
         if (response2.spentTransactionId === null) {

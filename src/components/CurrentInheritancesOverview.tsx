@@ -31,9 +31,9 @@ function CurrentInheritancesOverview() {
 						:
 						<div>
 							<h2>Owner of:</h2>
-							<CurrentInheritancesOverviewTable owner={true} value={state.inheritances.owner_of}/>
+							<CurrentInheritancesOverviewTable owner={true} value={state.inheritances.owner_of} />
 							<h2>Heir of:</h2>
-							<CurrentInheritancesOverviewTable owner={false} value={state.inheritances.heir_of}/>
+							<CurrentInheritancesOverviewTable owner={false} value={state.inheritances.heir_of} />
 						</div>
 					: []
 			}

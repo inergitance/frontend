@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { AppProvider } from "./redux/AppContext";
@@ -13,7 +13,7 @@ import CreateInheritancePage from "./pages/CreateInheritance";
 import InheritanceOwnerPage from "./pages/InheritancesOwner";
 import InheritanceHeirPage from "./pages/InheritanceHeir";
 
-import './css/App.css';
+import "./css/App.css";
 
 // todo fix default route to home maybe???
 

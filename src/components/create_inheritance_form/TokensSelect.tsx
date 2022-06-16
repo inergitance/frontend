@@ -40,7 +40,7 @@ function TokensSelect(props: { tokens: IToken[], setToken: (token_id: string, de
 			<p><b>Name:</b> {props.tokens[selectedTokenIndex].name}</p>
 			<p><b>Description:</b> {props.tokens[selectedTokenIndex].description}</p>
 			<p><b>Decimals:</b> {props.tokens[selectedTokenIndex].decimals}</p>
-			<p><b>Available:</b> 
+			<p><b>Available:</b>
 				{props.tokens[selectedTokenIndex].amount * (10 ** (-props.tokens[selectedTokenIndex].decimals))}
 			</p>
 			<input type="number" name="token-amount" min="0"

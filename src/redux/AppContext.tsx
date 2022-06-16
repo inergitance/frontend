@@ -9,12 +9,12 @@ export const AppContext = React.createContext<{
 	dispatch: () => null
 })
 
-export function AppProvider({ children } : any) {
-	
+export function AppProvider({ children }: any) {
+
 	const [state, dispatch] = React.useReducer(reducer, initialState)
 
 	return (
-		<AppContext.Provider value={{state, dispatch}}>
+		<AppContext.Provider value={{ state, dispatch }}>
 			{children}
 		</AppContext.Provider>
 	)
