@@ -15,6 +15,8 @@ import {
 	validate_address, create_transaction_phase1, sign_tx, submit_tx
 } from "../scripts/transactionsBuilder";
 
+import { block_difference_to_time, time_to_text } from "../scripts/timeUtils";
+
 import AssetsSelected from "./create_inheritance_form/AssetsSelected";
 import TokensSelect from "./create_inheritance_form/TokensSelect";
 import FeesOverview from "./create_inheritance_form/FeesOverview";
@@ -87,7 +89,7 @@ async function validate_form(
 	wallet: IWalletProperties
 ): Promise<boolean> {
 
-	if(settings.assets.ergs < MIN_NANO_ERGS_IN_BOX){
+	if (settings.assets.ergs < MIN_NANO_ERGS_IN_BOX) {
 		alert("There has to be at least minimum amount of ERG in the box");
 		return false;
 	}
@@ -161,7 +163,7 @@ function CreateInheritanceForm() {
 
 	const [assetsSelected, setAssetsSelected] = useState<IAssetsSelected>(ASSETS_SELECTED_DEFAULT_STATE);
 	const [addresses, setAddresses] = useState<IAddresses>(ADDRESSES_DEFAULT_STATE);
-	const [lockTime, setlockTime] = useState<number>(1);
+	const [lockTime, setlockTime] = useState<number>(0);
 
 	const [txSent, setTxSent] = useState<ITxSent>(TX_SENT_DEFAULT_STATE);
 
@@ -280,7 +282,7 @@ function CreateInheritanceForm() {
 			fees,
 			state.wallet
 		).then((result: boolean) => {
-			if (result){
+			if (result) {
 				const tkns: IUTXOToken[] = assetsSelected.tokens.map((tkn: ITokenSelected) => (
 					{
 						tokenId: tkn.id,
@@ -296,10 +298,10 @@ function CreateInheritanceForm() {
 					tkns
 				).then(u_tx => {
 					sign_tx(u_tx).then(s_tx => {
-						if(s_tx !== null){
+						if (s_tx !== null) {
 							submit_tx(s_tx).then(res => {
-								if(res !== null){
-									setTxSent({sent: true, txId: res});
+								if (res !== null) {
+									setTxSent({ sent: true, txId: res });
 								}
 							});
 						}
@@ -317,7 +319,7 @@ function CreateInheritanceForm() {
 						target="_blank" rel="noopener norefferer">
 						{txSent.txId}
 					</a>
-				 &nbsp;was successfully sent! :-)</h3>
+					&nbsp;was successfully sent! :-)</h3>
 			</div>
 		);
 	}
@@ -366,6 +368,11 @@ function CreateInheritanceForm() {
 					<input type="number" min="1" placeholder="Withdrawal delay (blocks)"
 						onChange={lockTimeChangedHandler} ref={lockTimeInputElement}
 					/>
+					{
+						lockTime ?
+							<p>(approx. {time_to_text(block_difference_to_time(lockTime))})</p>
+						: []
+					}
 				</div>
 				<div className="inheritance-form-subsection-div">
 					<h3 className="inheritance-form-heading">Summary:</h3>

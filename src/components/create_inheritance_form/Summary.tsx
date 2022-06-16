@@ -5,6 +5,9 @@ import { ITokenSelected, ICreateInheritanceProperties } from "../CreateInheritan
 
 import { NANO_ERGS_IN_ONE_ERG } from "../../scripts/blockchainParameters";
 
+import { inflect_word } from "../../scripts/inflectWord";
+import { block_difference_to_time, time_to_text } from "../../scripts/timeUtils";
+
 function Summary(props: { properties: ICreateInheritanceProperties }) {
 	return (
 		<table className="create-inheritance-summary-table">
@@ -55,7 +58,11 @@ function Summary(props: { properties: ICreateInheritanceProperties }) {
 					<th colSpan={2}>Heir's withdrawal period</th>
 				</tr>
 				<tr>
-					<td colSpan={2}>{props.properties.lockTime} {(props.properties.lockTime == 1) ? "block" : "blocks"}</td>
+					<td colSpan={2}>
+						{props.properties.lockTime} {inflect_word(props.properties.lockTime, ["block", "blocks"])}
+						<br />
+						(approx. {time_to_text(block_difference_to_time(props.properties.lockTime))})
+					</td>
 				</tr>
 			</tbody>
 		</table>
