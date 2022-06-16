@@ -5,7 +5,7 @@ import {
 	TRANSACTION_PHASE1_TO_PHASE2_BLOCKCHAIN_FEE
 } from "./blockchainParameters";
 import { INERGITANCE_SERVICE_FEE_ADDRESS, INERGITANCE_SERVICE_FEE_AMOUNT } from "../scripts/inERGitanceSettings";
-import { IUTXOToken, get_box_to_spend, get_box_to_spend_original_json } from "./walletConnector";
+import { IUTXOToken, get_box_to_spend_original_json } from "./walletConnector";
 
 import {
 	generate_phase1_p2s_address,

@@ -288,7 +288,6 @@ export async function get_box_containing_nft(nft: string): Promise<INFTBox | nul
 			nftbox_info.address = response2.address;
 			nftbox_info.phase = await address_to_inheritance_phase(response2.address);
 			return nftbox_info;
-			break;
 		}
 	}
 
