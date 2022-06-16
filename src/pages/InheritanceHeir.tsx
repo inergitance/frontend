@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Navigate, useSearchParams } from "react-router-dom";
 
@@ -7,7 +7,7 @@ import {
 } from "../scripts/walletConnector";
 
 import {
-	validate_address, create_transaction_phase1_to_phase2, sign_tx, submit_tx, INautilusUTXO
+	create_transaction_phase1_to_phase2, sign_tx, submit_tx, INautilusUTXO
 } from "../scripts/transactionsBuilder";
 
 import { ITxSent, TX_SENT_DEFAULT_STATE } from "../components/CreateInheritanceForm";
@@ -21,14 +21,13 @@ import "../css/CreateInheritanceForm.css";
 //todo split UI to support 2 required withdrawal phases
 
 async function construct_and_sign_phase1_to_phase2_transaction(
-	box: INFTBox, address: string
+	box: INFTBox
 ): Promise<string | null> {
 
 	const bx: INautilusUTXO = await get_box_to_spend(box.boxId);
 	const tkns: IUTXOToken[] = bx.assets;
 
 	const unsigned_tx = await create_transaction_phase1_to_phase2(
-		address,
 		bx,
 		box.nftId,
 		parseInt(bx.value),
@@ -57,7 +56,7 @@ function InheritanceHeirPage() {
 
 	const [txSent, setTxSent] = useState<ITxSent>(TX_SENT_DEFAULT_STATE);
 
-	const withdrawalAddressInputElement = useRef<HTMLInputElement>(null);
+	const [phaseNumber, setPhaseNumber] = useState<number>(0);
 
 	const [searchParams] = useSearchParams();
 
@@ -66,8 +65,9 @@ function InheritanceHeirPage() {
 	useEffect(() => {
 		if (inheritance_id !== null)
 			get_box_containing_nft(inheritance_id).then(result => {
-				if (result === null)
+				if (result === null || result.phase < 1 || result.phase > 3)
 					return (<Navigate to="/my-inheritance" />);
+				setPhaseNumber(result.phase);
 			});
 	});
 
@@ -85,40 +85,20 @@ function InheritanceHeirPage() {
 		);
 	}
 
-	function addressesChangedHandler() {
-
-	}
-
-	function useCurrentAddressHandler(e: React.MouseEvent<HTMLElement>) {
+	function withdrawP1P2AssetsHandler(e: React.MouseEvent<HTMLElement>) {
 		e.preventDefault();
-		if (withdrawalAddressInputElement.current) {
-			withdrawalAddressInputElement.current.value = state.wallet.address;
-			addressesChangedHandler();
-		}
-	}
-
-	function withdrawAssetsHandler(e: React.MouseEvent<HTMLElement>) {
-		e.preventDefault();
-		if (withdrawalAddressInputElement.current) {
-			validate_address(withdrawalAddressInputElement.current.value).then((result: boolean) => {
-				if (result && inheritance_id !== null) {
-					get_box_containing_nft(inheritance_id).then(result => {
-						if (result !== null) {
-							construct_and_sign_phase1_to_phase2_transaction(result,
-								withdrawalAddressInputElement.current!.value
-							).then(res => {
-								if (res == null) alert("Transaction sending failed!");
-								else {
-									setTxSent({ sent: true, txId: res });
-								}
-							});
+		if (inheritance_id !== null) {
+			get_box_containing_nft(inheritance_id).then(result => {
+				if (result !== null) {
+					construct_and_sign_phase1_to_phase2_transaction(result).then(res => {
+						if (res == null) alert("Transaction sending failed!");
+						else {
+							setTxSent({ sent: true, txId: res });
 						}
 					});
-
-				} else {
-					alert("Invalid withdrawal address!");
 				}
 			});
+
 		}
 	}
 
@@ -134,6 +114,8 @@ function InheritanceHeirPage() {
 			</div>
 		);
 	}
+
+	//todo fix UI in P1 to P2
 
 	return (
 
@@ -151,29 +133,32 @@ function InheritanceHeirPage() {
 					}} />
 			}
 
-			<div className="inheritance-form-main-div">
-				<h2 className="inheritance-form-heading">Inheritance withdrawal form</h2>
-				<form action="">
+			{
 
-					<div className="inheritance-form-subsection-div">
-						<h3 className="inheritance-form-heading">Address:</h3>
-						<hr />
-						<input type="text" placeholder="Withdrawal address"
-							onChange={addressesChangedHandler} ref={withdrawalAddressInputElement}
-						/>
-						<button onClick={useCurrentAddressHandler} className="create-inheritance-form-button">
-							Use current address
-						</button>
+				(phaseNumber === 1) ?
+
+					<div className="inheritance-form-main-div">
+						<h2 className="inheritance-form-heading">Inheritance withdrawal form</h2>
+						<form action="">
+
+							<p>Inheritance is currently in Phase1 - it means that you (as it's heir) need to first withdraw it to the Phase2</p>
+							<p>Then you need to wait some time (TODO time ???) and then withdraw it from Phase2 to your wallet.</p>
+							<p>By taping on the button bellow you can initiate the withdrawal process from Phase1 to Phase2</p>
+
+							<button onClick={withdrawP1P2AssetsHandler} className="create-inheritance-form-button">
+								Initiate withdrawal
+							</button>
+
+						</form>
 					</div>
 
-					<button onClick={withdrawAssetsHandler} className="create-inheritance-form-button">
-						Withdraw assets
-					</button>
+					: <p>TODO</p>
 
-				</form>
-			</div>
 
-		</div>
+			}
+
+
+		</div >
 	);
 
 }

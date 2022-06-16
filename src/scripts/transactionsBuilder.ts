@@ -331,7 +331,7 @@ async function get_output_box_candidates_owner_withdrawal(
 }
 
 async function get_output_box_candidates_phase1_to_phase2(
-	heir: string, nanoErgs: number, tokens: IUTXOToken[], box_to_spend_json: string,
+	nanoErgs: number, tokens: IUTXOToken[], box_to_spend_json: string,
 	nftId: string, height: number
 ) {
 
@@ -487,7 +487,7 @@ export async function create_transaction_owner_withdrawal(
 }
 
 export async function create_transaction_phase1_to_phase2(
-	heir: string, box_to_spend: INautilusUTXO, nftId: string, nanoErgs: number, tokens: IUTXOToken[]
+	box_to_spend: INautilusUTXO, nftId: string, nanoErgs: number, tokens: IUTXOToken[]
 ): Promise<ITxConverted> {
 
 	let wasm = (await ergolib);
@@ -502,7 +502,7 @@ export async function create_transaction_phase1_to_phase2(
 	);
 
 	const output_box_candidates = await get_output_box_candidates_phase1_to_phase2(
-		heir, nanoErgs, tokens,
+		nanoErgs, tokens,
 		(await get_box_to_spend_original_json(box_to_spend.boxId)),
 		nftId, height
 	);
@@ -518,7 +518,8 @@ export async function create_transaction_phase1_to_phase2(
 		output_box_candidates,
 		height,
 		miner_fee_value,
-		wasm.Address.from_base58(heir),
+		//there will not be any change, however something had to be put here as function parameter
+		wasm.Address.from_base58(INERGITANCE_SERVICE_FEE_ADDRESS),
 		min_change_value
 	);
 
