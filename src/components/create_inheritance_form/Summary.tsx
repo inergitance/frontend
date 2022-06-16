@@ -55,7 +55,7 @@ function Summary(props: { properties: ICreateInheritanceProperties }) {
 					<th colSpan={2}>Heir's withdrawal period</th>
 				</tr>
 				<tr>
-					<td colSpan={2}>{props.properties.weeks} {(props.properties.weeks > 1) ? "weeks" : "week"}</td>
+					<td colSpan={2}>{props.properties.lockTime} {(props.properties.lockTime == 1) ? "block" : "blocks"}</td>
 				</tr>
 			</tbody>
 		</table>

@@ -47,7 +47,7 @@ export interface IAddresses {
 export interface ICreateInheritanceProperties {
 	assets: IAssetsSelected,
 	addresses: IAddresses,
-	weeks: number
+	lockTime: number
 };
 
 export interface ITxSent {
@@ -87,6 +87,11 @@ async function validate_form(
 	wallet: IWalletProperties
 ): Promise<boolean> {
 
+	if(settings.assets.ergs < MIN_NANO_ERGS_IN_BOX){
+		alert("There has to be at least minimum amount of ERG in the box");
+		return false;
+	}
+
 	if ((settings.assets.ergs + fees.blockchain + fees.service) > wallet.balance.nanoErgs) {
 		alert("Wallet don't have enough ERGs!");
 		return false;
@@ -103,8 +108,8 @@ async function validate_form(
 		return false;
 	}
 
-	if (settings.weeks < 1) {
-		alert("At least one week withdrawal period is required!");
+	if (settings.lockTime < 1) {
+		alert("At least one block withdrawal lock time is required!");
 		return false;
 	}
 
@@ -156,7 +161,7 @@ function CreateInheritanceForm() {
 
 	const [assetsSelected, setAssetsSelected] = useState<IAssetsSelected>(ASSETS_SELECTED_DEFAULT_STATE);
 	const [addresses, setAddresses] = useState<IAddresses>(ADDRESSES_DEFAULT_STATE);
-	const [weeks, setWeeks] = useState<number>(1);
+	const [lockTime, setlockTime] = useState<number>(1);
 
 	const [txSent, setTxSent] = useState<ITxSent>(TX_SENT_DEFAULT_STATE);
 
@@ -168,7 +173,7 @@ function CreateInheritanceForm() {
 	const heirAddressInputElement = useRef<HTMLInputElement>(null);
 	const holidayProtectorHashInputElement = useRef<HTMLInputElement>(null);
 
-	const weeksInputElement = useRef<HTMLInputElement>(null);
+	const lockTimeInputElement = useRef<HTMLInputElement>(null);
 
 	function assets_set_ergs(amount: number) {
 		setAssetsSelected((previous: IAssetsSelected) => ({ ...previous, ergs: amount }));
@@ -258,9 +263,9 @@ function CreateInheritanceForm() {
 		));
 	}
 
-	function weeksChangedHandler() {
-		setWeeks((previous: number) => (
-			(weeksInputElement.current ? parseInt(weeksInputElement.current.value) : 1)
+	function lockTimeChangedHandler() {
+		setlockTime((previous: number) => (
+			(lockTimeInputElement.current ? parseInt(lockTimeInputElement.current.value) : 1)
 		));
 	}
 
@@ -270,7 +275,7 @@ function CreateInheritanceForm() {
 			{
 				assets: assetsSelected,
 				addresses: addresses,
-				weeks: weeks
+				lockTime: lockTime
 			},
 			fees,
 			state.wallet
@@ -286,7 +291,7 @@ function CreateInheritanceForm() {
 					addresses.owner,
 					addresses.heir,
 					addresses.holiday_protector,
-					weeks,
+					lockTime,
 					assetsSelected.ergs,
 					tkns
 				).then(u_tx => {
@@ -358,8 +363,8 @@ function CreateInheritanceForm() {
 					<button onClick={setZerosHandler} className="create-inheritance-form-button">
 						Set zeros
 					</button>
-					<input type="number" min="1" placeholder="Withdrawal delay (weeks)"
-						onChange={weeksChangedHandler} ref={weeksInputElement}
+					<input type="number" min="1" placeholder="Withdrawal delay (blocks)"
+						onChange={lockTimeChangedHandler} ref={lockTimeInputElement}
 					/>
 				</div>
 				<div className="inheritance-form-subsection-div">
@@ -369,7 +374,7 @@ function CreateInheritanceForm() {
 						properties={{
 							assets: assetsSelected,
 							addresses: addresses,
-							weeks: weeks
+							lockTime: lockTime
 						}}
 					/>
 					<hr />
