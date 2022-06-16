@@ -20,7 +20,9 @@ import { AppContext } from "../redux/AppContext";
 
 import "../css/CreateInheritanceForm.css";
 
-//todo split UI to support 2 required withdrawal phases
+//todo implement function for remaining time for heir withdrawal retrieval
+//todo show WithdrawalForm only in case that withdrawal is already possible
+//	otherwise show warning containing explanation together with remaining time
 
 async function construct_and_sign_phase1_to_phase2_transaction(
 	box: INFTBox

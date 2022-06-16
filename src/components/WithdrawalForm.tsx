@@ -36,8 +36,6 @@ async function construct_and_sign_withdrawal_transaction(box: INFTBox, address: 
 	return sent_tx;
 }
 
-//todo fix me - in case of heir withdrawal show remaining time needed to wait before withdrawal
-
 function WithdrawalForm(
 	props: {
 		inheritanceId: string,
