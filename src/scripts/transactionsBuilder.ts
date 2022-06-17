@@ -132,7 +132,7 @@ export async function validate_address(address: string): Promise<boolean> {
 	return true;
 }
 
-async function get_block_height(): Promise<number> {
+export async function get_block_height(): Promise<number> {
 	const response = await get_request(EXPLORER_URL + EXPLORER_BLOKCHAIN_HEIGHT_PREFIX);
 	return response.items[0].height;
 }
