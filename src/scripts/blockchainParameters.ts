@@ -7,8 +7,7 @@ export const MIN_NANO_ERGS_IN_BOX: number = 1000000;
 export const MAX_UNIQUE_TOKENS_IN_BOX: number = 4;
 
 export const MAINNET_BLOCK_TIME_SECONDS: number = 120;
-//change to 5 seconds when new testnet will be released
-export const TESTNET_BLOCK_TIME_SECONDS: number = 120;
+export const TESTNET_BLOCK_TIME_SECONDS: number = 5;
 export const BLOCK_TIME_SECONDS: number =
 	USE_MAINNET ? MAINNET_BLOCK_TIME_SECONDS : TESTNET_BLOCK_TIME_SECONDS;
 
